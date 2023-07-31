@@ -1,4 +1,5 @@
 const { XMLParser } = require('fast-xml-parser');
+const jwt = require('jsonwebtoken')
 
 const valid_users = ['sdm76', 'adf44']
 
@@ -11,11 +12,11 @@ export async function onRequest(context) {
             return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
         }
         const { valid, netid } = await validateCAS(ticket)
-        const out_data = JSON.stringify({
-            netid: netid,
-            valid: valid,
-        })
-        return new Response(out_data, { status: 200, headers: { 'content-type': 'application/json;charset=UTF-8' } })
+        // secret is stored on the cloudflare pages dashboard
+        // check the token with jwt.verify(token, secret, (err, decoded) => {})
+        // user-side will send in the authorization header
+        const token = jwt.sign({ netid: netid, valid: valid }, context.env.ACTLAB_SECRET, { expiresIn: '4h' })
+        return new Response(token, { status: 200, headers: { 'content-type': 'application/json;charset=UTF-8' } })
     }
     catch (err) {
         return new Response('Something went wrong', { status: 500 })

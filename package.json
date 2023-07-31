@@ -6,6 +6,7 @@
     "author": "api.actlab.dev Robot",
     "private": true,
     "dependencies": {
-        "fast-xml-parser": "4.2.7"
+        "fast-xml-parser": "4.2.7",
+        "jsonwebtoken": "9.0.1"
     }
 }
