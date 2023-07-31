@@ -1,9 +1,8 @@
 
 
-export async function onRequest(context, env) {
+export async function onRequest(context) {
     console.log(JSON.stringify(context))
-    console.log(JSON.stringify(env))
-    const url = new URL(context.url)
+    const url = new URL(context.request.url)
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
         return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
