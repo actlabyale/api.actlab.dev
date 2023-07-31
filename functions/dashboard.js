@@ -1,7 +1,8 @@
 
 
-export async function onRequest(context) {
+export async function onRequest(context, env) {
     console.log(JSON.stringify(context))
+    console.log(JSON.stringify(env))
     const url = new URL(context.url)
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
