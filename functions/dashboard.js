@@ -16,7 +16,7 @@ export async function onRequest(context) {
         // check the token with jwt.verify(token, secret, (err, decoded) => {})
         // user-side will send in the authorization header
         const token = jwt.sign({ netid: netid, valid: valid }, context.env.ACTLAB_SECRET, { expiresIn: '4h' })
-        return new Response(token, { status: 200, headers: { 'content-type': 'application/json;charset=UTF-8' } })
+        return new Response(token, { status: 200, headers: { 'content-type': 'application/jwt' } })
     }
     catch (err) {
         return new Response('Something went wrong', { status: 500 })
