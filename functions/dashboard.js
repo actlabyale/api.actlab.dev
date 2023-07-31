@@ -1,8 +1,8 @@
 
 
 export async function onRequest(context) {
-    console.log(JSON.stringify(context.headers))
-    const url = new URL(context.headers.get('Referer'))
+    console.log(JSON.stringify(context.url))
+    const url = new URL(context.url)
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
         return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
