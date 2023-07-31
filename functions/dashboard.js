@@ -1,5 +1,7 @@
 const { XMLParser } = require('fast-xml-parser');
 
+const valid_users = ['sdm76', 'adf44']
+
 export async function onRequest(context) {
     const url = new URL(context.request.url)
     const ticket = url.searchParams.get('ticket')
@@ -22,7 +24,12 @@ async function validateCAS(ticket) {
     try {
         const str = parser.parse(txt, true)
         console.log(JSON.stringify(str))
-        return { valid: true, netid: 'foo' }
+        const cas = str['cas:serviceResponse']
+        if ('cas:authenticationSuccess' in cas && 'cas:user' in cas['cas:authenticationSuccess']) {
+            const user = cas['cas:authenticationSuccess']['cas:user']
+            return { valid: valid_users.includes(user), netid: user }
+        }
+        throw new Error('Invalid NetID')
     }
     catch (err) {
         return { valid: false, netid: '' }
