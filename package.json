@@ -7,6 +7,6 @@
     "private": true,
     "dependencies": {
         "fast-xml-parser": "4.2.7",
-        "jsonwebtoken": "9.0.1"
+        "jose": "4.14.4"
     }
 }
