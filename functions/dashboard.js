@@ -15,13 +15,14 @@ export async function onRequest(context) {
 
         // secret is stored on the cloudflare pages dashboard
         // see https://github.com/panva/jose/blob/main/docs/functions/jwt_decrypt.jwtDecrypt.md for decryption
+        const secret = jose.base64url.decode(context.env.ACTLAB_SECRET)
         const token = await new jose.EncryptJWT({ netid: netid, valid: valid })
             .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
             .setIssuedAt()
             .setIssuer('yale:actlab:sam')
             .setAudience('yale:actlab:exp_admin')
             .setExpirationTime('4h')
-            .encrypt(new TextEncoder().encode(context.env.ACTLAB_SECRET))
+            .encrypt(secret)
         return new Response(token, { status: 200, headers: { 'content-type': 'application/jwt' } })
     }
     catch (err) {
