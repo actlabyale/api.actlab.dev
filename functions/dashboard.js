@@ -1,5 +1,5 @@
 const { XMLParser } = require('fast-xml-parser');
-const jwt = require('jsonwebtoken')
+const jose = require('jose')
 
 const valid_users = ['sdm76', 'adf44']
 
@@ -14,9 +14,14 @@ export async function onRequest(context) {
         const { valid, netid } = await validateCAS(ticket)
 
         // secret is stored on the cloudflare pages dashboard
-        // check the token with jwt.verify(token, secret, (err, decoded) => {})
-        // user-side will send in the authorization header
-        const token = jwt.sign({ netid: netid, valid: valid }, context.env.ACTLAB_SECRET, { expiresIn: '4h' })
+        // see https://github.com/panva/jose/blob/main/docs/functions/jwt_decrypt.jwtDecrypt.md for decryption
+        const token = await new jose.EncryptJWT({ netid: netid, valid: valid })
+            .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+            .setIssuedAt()
+            .setIssuer('yale:actlab:sam')
+            .setAudience('yale:actlab:exp_admin')
+            .setExpirationTime('4h')
+            .encrypt(jose.base64url.decode(context.env.ACTLAB_SECRET))
         return new Response(token, { status: 200, headers: { 'content-type': 'application/jwt' } })
     }
     catch (err) {
