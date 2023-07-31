@@ -25,6 +25,7 @@ export async function onRequest(context) {
         return new Response(token, { status: 200, headers: { 'content-type': 'application/jwt' } })
     }
     catch (err) {
+        console.log(err)
         return new Response('Something went wrong', { status: 500 })
     }
 }
