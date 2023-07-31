@@ -3,27 +3,34 @@ const { XMLParser } = require('fast-xml-parser');
 const valid_users = ['sdm76', 'adf44']
 
 export async function onRequest(context) {
-    const url = new URL(context.request.url)
-    const ticket = url.searchParams.get('ticket')
-    if (!ticket) {
-        return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
+    try {
+
+        const url = new URL(context.request.url)
+        const ticket = url.searchParams.get('ticket')
+        if (!ticket) {
+            return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
+        }
+        const { valid, netid } = await validateCAS(ticket)
+        const out_data = JSON.stringify({
+            netid: netid,
+            valid: valid,
+        })
+        return new Response(out_data, { status: 200, headers: { 'content-type': 'application/json;charset=UTF-8' } })
     }
-    const { valid, netid } = await validateCAS(ticket)
-    if (!valid) {
-        return new Response('Invalid ticket.', { status: 500 })
+    catch (err) {
+        return new Response('Something went wrong', { status: 500 })
     }
-    return new Response(netid, { status: 200 })
 }
 
-
+// references for CAS usage:
+// https://gist.github.com/duhaime/eda9506ac67e37b418e59fbb9ed07b8a
+// https://github.com/yalecs/bdgate/blob/45b3a917ae7e3df67eabc54138167380ad05e0bf/handlers/main.go#L70
 async function validateCAS(ticket) {
     const resp = await fetch(`https://secure.its.yale.edu/cas/serviceValidate?ticket=${ticket}&service=https%3A%2F%2Fapi.actlab.dev%2Fdashboard`)
     const txt = await resp.text()
-    console.log(txt)
     const parser = new XMLParser()
     try {
         const str = parser.parse(txt, true)
-        console.log(JSON.stringify(str))
         const cas = str['cas:serviceResponse']
         if ('cas:authenticationSuccess' in cas && 'cas:user' in cas['cas:authenticationSuccess']) {
             const user = cas['cas:authenticationSuccess']['cas:user']
