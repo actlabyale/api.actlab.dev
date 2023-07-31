@@ -1,6 +1,7 @@
 
 
 export async function onRequest(context) {
+    console.log(JSON.stringify(context.headers))
     const url = new URL(context.headers.get('Referer'))
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
