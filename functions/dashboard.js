@@ -1,13 +1,13 @@
 
 
 export async function onRequest(context) {
-    const url = new URL(request.headers.get('Referer'))
+    const url = new URL(context.headers.get('Referer'))
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
         return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
     }
     const result = await validateCAS(ticket)
-    return new Response('Fooo')
+    return new Response(resp, { status: 200 })
 }
 
 
