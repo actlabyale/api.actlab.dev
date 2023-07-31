@@ -9,7 +9,10 @@ export async function onRequest(context) {
     }
     console.log(ticket)
     const { valid, netid } = await validateCAS(ticket)
-    return new Response(resp, { status: 200 })
+    if (!valid) {
+        return new Response('Invalid ticket.', { status: 500 })
+    }
+    return new Response(netid, { status: 200 })
 }
 
 
