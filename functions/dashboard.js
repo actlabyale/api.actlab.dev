@@ -16,7 +16,7 @@ export async function onRequest(context) {
 async function validateCAS(ticket) {
     const resp = await fetch(`https://secure.its.yale.edu/cas/serviceValidate?ticket=${ticket}&service=https%3A%2F%2Fapi.actlab.dev%2Fdashboard`)
         .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, 'text/xml'))
+        .then(str => new DOMParser().parseFromString(str, 'text/xml'))
         .then(data => console.log(data))
     return resp
 }
