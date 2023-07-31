@@ -1,6 +1,7 @@
 
 
 export async function onRequest(context) {
+    console.log(JSON.stringify(context))
     const url = new URL(context.url)
     const ticket = url.searchParams.get('ticket')
     if (!ticket) {
