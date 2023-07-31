@@ -15,7 +15,7 @@ export async function onRequest(context) {
 
         // secret is stored on the cloudflare pages dashboard
         // see https://github.com/panva/jose/blob/main/docs/functions/jwt_decrypt.jwtDecrypt.md for decryption
-        const secret = jose.base64url.decode(context.env.ACTLAB_SECRET)
+        const secret = jose.base64url.decode(jose.base64url.encode(context.env.ACTLAB_SECRET))
         const token = await new jose.EncryptJWT({ netid: netid, valid: valid })
             .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
             .setIssuedAt()
