@@ -1,4 +1,4 @@
-const parser = require('fast-xml-parser');
+const { XMLParser } = require('fast-xml-parser');
 
 export async function onRequest(context) {
     console.log(JSON.stringify(context))
@@ -16,10 +16,14 @@ export async function onRequest(context) {
 async function validateCAS(ticket) {
     const resp = await fetch(`https://secure.its.yale.edu/cas/serviceValidate?ticket=${ticket}&service=https%3A%2F%2Fapi.actlab.dev%2Fdashboard`)
     const txt = resp.text()
-    if (!parser.validate(txt)) {
+    const parser = new XMLParser()
+    try {
+        const str = parser.parse(txt, true)
+        console.log(JSON.stringify(str))
+        return { valid: true, netid: 'foo' }
+    }
+    catch (err) {
         return { valid: false, netid: '' }
     }
-    const str = parser.parse(txt)
-    console.log(JSON.stringify(str))
-    return { valid: true, netid: 'foo' }
+
 }
