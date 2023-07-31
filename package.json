@@ -1,0 +1,11 @@
+{
+    "name": "api.actlab.dev",
+    "version": "0.0.0",
+    "description": "api.actlab.dev",
+    "license": "MIT",
+    "author": "api.actlab.dev Robot",
+    "private": true,
+    "dependencies": {
+        "fast-xml-parser": "4.2.7"
+    }
+}
