@@ -21,7 +21,7 @@ export async function onRequest(context) {
             .setIssuer('yale:actlab:sam')
             .setAudience('yale:actlab:exp_admin')
             .setExpirationTime('4h')
-            .encrypt(context.env.ACTLAB_SECRET)
+            .encrypt(new TextEncoder().encode(context.env.ACTLAB_SECRET))
         return new Response(token, { status: 200, headers: { 'content-type': 'application/jwt' } })
     }
     catch (err) {
