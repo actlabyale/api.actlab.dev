@@ -12,6 +12,7 @@ export async function onRequest(context) {
             return new Response('Missing ticket.', { status: 500 }) // TODO: more appropriate status
         }
         const { valid, netid } = await validateCAS(ticket)
+
         // secret is stored on the cloudflare pages dashboard
         // check the token with jwt.verify(token, secret, (err, decoded) => {})
         // user-side will send in the authorization header
